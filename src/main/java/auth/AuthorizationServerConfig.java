@@ -30,24 +30,25 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
 	    @Value("${resource.id:spring-boot-application}")
 		private String resourceId;
-		
+
 		@Value("${access_token.validity_period:3600}")
 		int accessTokenValiditySeconds = 3600;
-		
+
         @Autowired
         @Qualifier("authenticationManagerBean")
         private AuthenticationManager authenticationManager;
-        
+
         @Autowired
         private JwtConfig securityConfig;
-        
+
         protected static class CustomTokenEnhancer implements TokenEnhancer {
         	@Override
         	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
         		final Map<String, Object> additionalInfo = new HashMap<>();
         		// TODO: add additional claims to the token
         		//additionalInfo.put("additionClaims", value);
-        		
+						additionalInfo.put("sub", "value");
+
         		((DefaultOAuth2AccessToken)accessToken).setAdditionalInformation(additionalInfo);
         		return accessToken;
         	}
@@ -56,10 +57,10 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         @Bean
         public JwtAccessTokenConverter jwtTokenEnhancer() {
             final JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-           
+
             /* for HS256, set the signing key */
             converter.setSigningKey(securityConfig.getSharedSecret());
-            
+
             /* for RS256, use a KeyPair
             final KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(
                     new ClassPathResource("keystore.jks"), "foobar".toCharArray());
@@ -67,23 +68,23 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
             */
             return converter;
         }
-        
+
         @Bean
         @Qualifier("tokenStore")
         public TokenStore tokenStore() {
             return new JwtTokenStore(jwtTokenEnhancer());
         }
-    
+
         @Override
         public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
             clients.inMemory()
 				// web bff -- password grant type
-				.withClient("bluecomputeweb") 
+				.withClient("bluecomputeweb")
                     .secret("bluecomputewebs3cret")
                     .authorizedGrantTypes(
                             "refresh_token",
                             "password")
-                    .scopes("blue").and()
+                    .scopes("blue","admin").and()
 				// mobile bff -- implicit grant type
 				.withClient("bluecomputemobile")
                     .secret("bluecomputemobiles3cret")
@@ -98,7 +99,7 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 throws Exception {
         	final TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
         	tokenEnhancerChain.setTokenEnhancers(Arrays.asList(new CustomTokenEnhancer(), jwtTokenEnhancer()));
-        	
+
             endpoints.tokenStore(tokenStore())
                      .tokenEnhancer(tokenEnhancerChain)
                      .authenticationManager(authenticationManager);

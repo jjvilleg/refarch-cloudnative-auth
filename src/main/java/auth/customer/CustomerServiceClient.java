@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @FeignClient(name="customer-service", url="${customerService.url}")
 public interface CustomerServiceClient {
-	@RequestMapping(method=RequestMethod.GET, value="/micro/customer/search", produces={MediaType.APPLICATION_JSON_VALUE})
+	@RequestMapping(method=RequestMethod.GET, value="/customer/rest/customer/search")
 	List<Customer> getCustomerByUsername(@RequestParam(value="username", required=true) String username);
 
-	@RequestMapping(method=RequestMethod.GET, value="/micro/check")
+	@RequestMapping(method=RequestMethod.GET, value="/customer/rest/customer/check")
 	void healthCheck();
 
 }

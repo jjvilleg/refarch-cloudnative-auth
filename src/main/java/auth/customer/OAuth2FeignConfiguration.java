@@ -18,7 +18,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
 /**
- * Interceptor that generates a signed admin JWT to call 
+ * Interceptor that generates a signed admin JWT to call
  * the search API on the customer API
  * @author jkwong
  *
@@ -29,7 +29,7 @@ public class OAuth2FeignConfiguration {
 	private static final String BEARER_TOKEN_TYPE = "Bearer";
 	private static final Logger logger = LoggerFactory.getLogger(OAuth2FeignRequestInterceptor.class);
 
-	private static String JWT_ISS = "auth-service";
+	//private static String JWT_ISS = "http://localhost:8000/oauth";
 	private static String JWT_ADMIN_SCOPE_NAME = "admin";
 	private static String JWT_BLUE_SCOPE_NAME = "blue";
 
@@ -44,7 +44,7 @@ public class OAuth2FeignConfiguration {
 
 		/**
 		 * Generate an Admin JWT Token to query the Customer Microservice
-		 * 
+		 *
 		 * @return
 		 */
 		private String generateJwtToken() {
@@ -54,8 +54,10 @@ public class OAuth2FeignConfiguration {
 			exp.add(Calendar.HOUR, 1);
 
 			try {
-				return Jwts.builder().setExpiration(exp.getTime()).setIssuedAt(now.getTime()).setIssuer(JWT_ISS)
+				return Jwts.builder().setExpiration(exp.getTime()).setIssuedAt(now.getTime())
+				    //.setIssuer(JWT_ISS)
 						.claim("user_name", "admin")
+						.claim("sub", "value")
 						.claim("scope", Arrays.asList(JWT_BLUE_SCOPE_NAME, JWT_ADMIN_SCOPE_NAME))
 						.signWith(SignatureAlgorithm.HS256,
 								Base64.getEncoder().encodeToString(jwtConfig.getSharedSecret().getBytes("UTF-8")))

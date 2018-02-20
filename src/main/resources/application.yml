@@ -18,13 +18,12 @@ spring:
   application:
      name: auth-microservice
 
-     
+
 security:
   ignored: /*.css
-  
+
 jwt:
-  sharedSecret: 
-     
+  sharedSecret:
+
 customerService:
-  url: http://customer-service:8080
-  
+  url: http://customer-service:9080
