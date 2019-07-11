@@ -3,6 +3,8 @@ kind: Service
 metadata:
   name: {{ .Release.Name }}-{{ .Values.service.name }}
   labels:
+    app: auth
+    version: v1
     chart: "{{ .Release.Name }}-{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
     release: {{ .Release.Name }}
     implementation: "microprofile"
@@ -25,6 +27,8 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-{{ .Values.service.name }}
   labels:
+    app: auth
+    version: v1
     app: bluecompute
     micro: auth
     service: server
