@@ -36,7 +36,8 @@ global:
 istio:
   enabled: false
   # ISTIO_MUTUAL, SIMPLE, DISABLE
-  mTLS: ISTIO_MUTUAL
+  # mTLS: ISTIO_MUTUAL
+  mTLS: SIMPLE
   # LEAST_CONN, ROUND_ROBIN
   loadBalancer: LEAST_CONN
   gateway:
