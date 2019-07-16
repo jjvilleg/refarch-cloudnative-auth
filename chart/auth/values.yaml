@@ -29,7 +29,7 @@ base:
 
 global:
   istio:
-    enabled: true
+    enabled: false
     gateway: 
       name: auth-gateway
 
