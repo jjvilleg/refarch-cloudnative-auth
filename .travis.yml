@@ -55,7 +55,7 @@ jobs:
       # Build Docker image
       - docker build -t "${IMAGE_NAME}:${TAG}" .
       # Install Auth
-      - helm install --set image.repository=${IMAGE_NAME} --set image.tag=${TAG} --set image.pullPolicy=Never --name auth ./chart/auth/
+      - helm install --set image.repository=${IMAGE_NAME} --set image.tag=${TAG} --set image.pullPolicy=Never --name ${RELEASE_NAME}-auth ./chart/auth/
       # Wait for Auth to be ready
       - kubectl get deployments ${RELEASE_NAME}-auth -o yaml
       - READY=$(kubectl get deployments ${RELEASE_NAME}-auth -o yaml | grep "readyReplicas" | awk '{print $2}')
