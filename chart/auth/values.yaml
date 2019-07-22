@@ -19,13 +19,18 @@ service:
   servicePort: 9080
   servicePortHttps: 9443
 
-services:
-base:
-  enabled: false
-  replicaCount: 1
-  image:
-    tag : v0.9.9
-  weight: 100
+resources:
+  requests:
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 300Mi
+
+labels:
+  app: auth
+  version: v1
+  tier: backend
+  implementation: microprofile
 
 global:
   istio:
@@ -34,7 +39,7 @@ global:
       name: auth-gateway
 
 istio:
-  enabled: false
+  enabled: true
   # ISTIO_MUTUAL, SIMPLE, DISABLE
   # mTLS: ISTIO_MUTUAL
   mTLS: SIMPLE
@@ -49,7 +54,7 @@ istio:
       enabled: false
       # SIMPLE, MUTUAL
       mode: SIMPLE
-      httpsRedirect: false
+      httpsRedirect: true
       serverCertificate: /etc/istio/ingressgateway-certs/tls.crt
       privateKey: /etc/istio/ingressgateway-certs/tls.key
 caCertificates: /etc/istio/ingressgateway-ca-certs/ca-chain.cert.pem
